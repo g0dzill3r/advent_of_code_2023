@@ -6,23 +6,6 @@ import aoc2023.week1.day3.Coordinate2
 
 val DAY = 10
 
-enum class Direction (val delta: Coordinate2) {
-    NORTH (Coordinate2 (-1, 0)),
-    SOUTH (Coordinate2 (1, 0)),
-    EAST (Coordinate2 (0, 1)),
-    WEST (Coordinate2 (0, -1));
-
-    val opposing: Direction
-        get () {
-            return when (this){
-                Direction.NORTH -> Direction.SOUTH
-                Direction.SOUTH -> Direction.NORTH
-                Direction.EAST -> Direction.WEST
-                Direction.WEST -> Direction.EAST
-            }
-        }
-}
-
 enum class TileType (val symbol: Char, val drawn: Char, val north: Boolean, val east: Boolean, val south: Boolean, val west: Boolean) {
     NS_PIPE ('|', '┃', true, false, true, false),
     EW_PIPE ('-', '━', false, true, false, true),
@@ -48,56 +31,10 @@ data class Tile (
     val type: TileType
 )
 
-data class Grid<T>  (
-    val width: Int,
-    val height: Int,
-    val data: MutableList<T>,
-) {
-    fun toIndex (coord: Coordinate2): Int = toIndex (coord.row, coord.col)
-    fun toIndex (row: Int, col: Int): Int = row * width + col
-    fun fromIndex (index: Int): Coordinate2 = Coordinate2 (index / width, index % width)
-
-    fun getTile (row: Int, col: Int) = data[toIndex (row, col)]
-    fun getTile (coord: Coordinate2) = getTile (coord.row, coord.col)
-    fun setTile (index: Int, t: T) = setTile (fromIndex (index), t)
-    fun setTile (coord: Coordinate2, t: T) = setTile (coord.row, coord.col, t)
-    fun setTile (row: Int, col: Int, t: T) {
-        data[toIndex (row, col)] = t
-    }
-
-    fun contains (coord: Coordinate2): Boolean {
-        return if (coord.row < 0 || coord.col < 0 || coord.row >= height || coord.col >= width) {
-            false
-        } else {
-            true
-        }
-    }
-
-    fun dump () {
-        val size = data.maxOf {
-            it.toString ().length
-        }
-        dump {
-            String.format ("%${size}s ", it)
-        }
-        return
-    }
-
-    fun dump (render: (t: T) -> String) {
-        for (row in 0 ..< height) {
-            for (col in 0 ..< width) {
-                print (render (data[toIndex (row, col)]))
-            }
-            println ()
-        }
-        return
-    }
-}
-
 data class Map (
     var _grid: Grid<Tile>
 ) {
-    lateinit var grid: Grid<Tile>
+    var grid: Grid<Tile>
     lateinit var start: Coordinate2
 
     init {
