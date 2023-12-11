@@ -8,10 +8,11 @@ import aoc2023.util.AOC
 
 fun main (args: Array<String>) {
     val DAY = 0
-    val (sample, puzzle) = AOC.getInputs(0)
+    val (s1, s2, p) = AOC.getInputs(DAY)
     println ("""
-        SAMPLE: $sample
-        PUZZLE: $puzzle
+        SAMPLE1: $s1
+        SAMPLE2: $s2
+        PUZZLE: $p
     """.trimIndent())
     return
 }
