@@ -21,25 +21,12 @@ fun main (args: Array<String>) {
 
     // Find all the galaxies
 
-    val els = mutableListOf<Coordinate2> ()
-    galaxies.grid.scan { row, col, t ->
-        if (t == Tile.GALAXY) {
-            els.add (Coordinate2 (row, col))
-        }
-    }
+    val els = galaxies.all
     println ("Found ${els.size} galaxies.")
 
     // Get all the pairs of galaxies to compute the distance between
 
-    val pairs = mutableListOf<Pair<Coordinate2, Coordinate2>> ().apply {
-        val len = els.size
-        for (i in 0 ..< len - 1) {
-            for (j in i + 1 ..< len) {
-                add (els[i] to els[j])
-            }
-        }
-    }
-
+    val pairs = galaxies.pairs
     var total = 0
     pairs.forEach {
         val (a, b) = it
