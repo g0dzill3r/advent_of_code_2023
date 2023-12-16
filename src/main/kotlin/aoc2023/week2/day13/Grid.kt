@@ -140,28 +140,66 @@ data class Grid (
         }
     }
 
-    val possibilities: Coordinate2
+    val possibilities: Map<Coordinate2?, Pair<Int?, Int?>>
+      get () {
+          val possible = mutableMapOf<Coordinate2?, Pair<Int?, Int?>> ().apply {
+              this[null] = seams
+          }
+
+          try {
+            override = null
+
+            // Remember what the original seams were so that we only trigger
+            // on an actual change
+
+            for (row in 0 ..< height) {
+                for (col in 0 ..< width) {
+                    override = Coordinate2 (row, col)
+                    val curr = seams
+                    if (curr.first != null || curr.second != null) {
+                        if (! possible.contains (override !!))
+                            possible[Coordinate2(row, col)] = curr
+                        }
+                    }
+                }
+            }
+            finally {
+                override = null
+            }
+
+            return possible
+        }
+
+    val alternate: Pair<Int?, Int?>
         get () {
             try {
-                val possible = mutableMapOf<Coordinate2?, Pair<Int?, Int?>> ()
+                override = null
+                val orig = this.seams
 
                 // Remember what the original seams were so that we only trigger
                 // on an actual change
-
-                override = null
-//                possible.add (null to seams)
 
                 for (row in 0 ..< height) {
                     for (col in 0 ..< width) {
                         override = Coordinate2 (row, col)
                         val curr = seams
-                        if (curr.first != null || curr.second != null) {
-                            if (! possible.contains (override !!))
-                                return Coordinate2(row, col)
+                        if (orig.first != null)  {
+                             if (curr.second != null) {
+                                 return null to curr.second
+                             } else {
+
+                             }
+                        } else if (orig.second != null)  {
+                            if (curr.first != null) {
+                                return curr.first to null
+                            } else {
+
                             }
                         }
                     }
-                throw Exception ("No alternate.")
+                }
+
+                throw Exception ("Not found.")
             }
             finally {
                 override = null
