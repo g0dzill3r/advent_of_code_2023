@@ -69,16 +69,22 @@ data class Grid  (
         return
     }
 
-    var beams = mutableListOf<Beam> ().apply {
-        add (Beam (Direction.RIGHT, Coordinate2 (0, -1)))
-    }.toList ()
+    /**
+     *
+     */
 
-    val already = data.map {
-        mutableMapOf<Direction, Boolean> ()
-    }
+    fun bounce (start: Beam): Int {
+        var beams = mutableListOf<Beam> ().apply {
+            add (start)
+        }.toList ()
 
-    fun bounce () {
-        var tick = 0
+        val already = data.map {
+            mutableMapOf<Direction, Boolean> ()
+        }
+
+        for (i in energized.indices) {
+            energized[i] = false
+        }
 
         while (beams.isNotEmpty ()) {
             val newBeams = mutableListOf<Beam> ()
@@ -96,9 +102,8 @@ data class Grid  (
                 .filter {
                     already[toIndex (it.coord)][it.direction] == null
                 }
-            tick ++
         }
-        return
+        return energizedCount
     }
 }
 
