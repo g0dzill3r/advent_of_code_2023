@@ -3,6 +3,11 @@ package aoc2023.week3.day16
 import aoc2023.util.AOC
 import aoc2023.week1.day3.Coordinate2
 
+/**
+ * Captures the state of a light bean as it meanders about the grid
+ * and interacts with the mirrors.
+ */
+
 data class Beam (val direction: Direction, val coord: Coordinate2) {
     val updated: Coordinate2
         get () = coord.delta (direction.delta)

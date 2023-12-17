@@ -24,13 +24,12 @@ fun main () {
         }
     }
 
-    // Calculate how many squares each one energizes
+    // Calculate the maximum level of energizing
 
     val energized = possibilities.map  {
         grid.bounce (it)
     }
-    val max = energized.max()
-    println (max)
+    println (energized.max())
     return
 }
 

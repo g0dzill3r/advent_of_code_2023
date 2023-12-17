@@ -10,13 +10,47 @@ enum class Condition (val symbol: Char) {
     companion object {
         private val symbols = Condition.values ().map { it.symbol to it }.toMap ()
         fun fromSymbol (symbol: Char): Condition = symbols[symbol] !!
+        val known = listOf (Condition.OPERATIONAL, Condition.DAMAGED)
     }
 }
 
 data class Record (
-    val conditions: MutableList<Condition>,
+    val conditions: List<Condition>,
     val contiguous: List<Int>
 ) {
+    fun replaced (list: List<Condition>): Record {
+        if (list.size != unknowns) {
+            throw IllegalStateException ("Mismatched replacement count: ${list.size} != $unknowns")
+        }
+        val iter = list.iterator ()
+        val updated = conditions.map {
+            if (it == Condition.UNKNOWN) {
+                iter.next ()
+            } else {
+                it
+            }
+        }
+        return Record (updated, contiguous)
+    }
+
+    val unknowns: Int
+        get () = conditions.filter { it == Condition.UNKNOWN }.count ()
+
+    val encoded: String
+        get () {
+            return StringBuffer().apply {
+                conditions.forEach {
+                    append (it.symbol)
+                }
+            }.toString()
+        }
+
+    val groups: List<Int>
+        get () = encoded.split (".").map { it.length }.filter { it != 0 }
+
+    val isValid: Boolean
+        get () = groups == contiguous
+
     val arrangements: Int
         get () = 1
 }
